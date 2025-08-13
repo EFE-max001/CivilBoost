@@ -1,0 +1,12 @@
+# Ignore the .env file for security
+.env
+
+# Ignore node_modules
+node_modules
+
+# Ignore log files
+logs/
+
+# Ignore build output
+build/
+dist/
