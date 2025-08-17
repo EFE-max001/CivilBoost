@@ -204,7 +204,7 @@ export default function Register() {
         throw new Error('Backend server is not running');
       }
 
-      const response = await fetch('http://localhost:5000/api/auth/send-verification', {
+      const response = await fetch('/api/auth/send-verification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -255,7 +255,7 @@ export default function Register() {
     setIsSubmitting(true);
     try {
       // Check if backend server is running first
-      const healthCheck = await fetch('http://localhost:5000/health', {
+      const healthCheck = await fetch('/health', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -266,7 +266,7 @@ export default function Register() {
         throw new Error('Backend server is not running');
       }
 
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

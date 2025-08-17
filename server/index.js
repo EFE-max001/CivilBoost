@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 
 // Set default environment variables for development
 process.env.SUPABASE_URL = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
@@ -17,6 +18,9 @@ const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Ensure server binds to localhost for development
+const HOST = 'localhost';
 
 // Security middleware
 app.use(helmet());
@@ -51,8 +55,11 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/api/auth', require('./routes/auth'));
 
-// Basic route
-app.get('/', (req, res) => {
+// Serve static files from React build
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Basic API info route
+app.get('/api', (req, res) => {
   res.json({ 
     message: 'CivilBoost API Server is running!',
     version: '1.0.0',
@@ -61,9 +68,17 @@ app.get('/', (req, res) => {
       register: '/api/auth/register',
       login: '/api/auth/login',
       sendVerification: '/api/auth/send-verification',
+      forgotPassword: '/api/auth/forgot-password',
+      verifyResetCode: '/api/auth/verify-reset-code',
+      resetPassword: '/api/auth/reset-password',
       profile: '/api/auth/profile'
     }
   });
+});
+
+// Serve React app for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 // Error handling middleware
@@ -83,4 +98,6 @@ app.use('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 CivilBoost API server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  console.log(`🔗 API endpoints: http://localhost:${PORT}/api/auth`);
 });
