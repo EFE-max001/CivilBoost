@@ -131,78 +131,78 @@ export default function Home() {
         <HeroSection>
           <HeroTitle>CivilBoost</HeroTitle>
           <HeroSubtitle>
-            Turn everyday actions into real-world progress. 
-            Earn coins, learn skills, and create positive change globally.
+            The world's first platform where your everyday actions create real global impact. 
+            Earn money while learning, growing, and building a better world for everyone.
           </HeroSubtitle>
           
           <ActionSection>
             <FuturisticButton size="large">
-              🚀 Start Earning
+              🚀 Start Earning Now
             </FuturisticButton>
             <FuturisticButton variant="secondary">
-              📚 Browse Courses
+              📚 Explore Opportunities
             </FuturisticButton>
           </ActionSection>
           
           <StatsSection>
-            <CoinDisplay amount={1250} label="Your Coins" />
-            <CoinDisplay amount={89} label="Life XP" />
-            <CoinDisplay amount={156} label="Civilization XP" />
+            <CoinDisplay amount={2847} label="Active Users" />
+            <CoinDisplay amount={156} label="Projects Funded" />
+            <CoinDisplay amount={89} label="Countries" />
           </StatsSection>
         </HeroSection>
 
         <FeatureGrid>
           <FeatureCard delay="0.2s">
             <FeatureIcon>💰</FeatureIcon>
-            <FeatureTitle>Earn While You Learn</FeatureTitle>
+            <FeatureTitle>Instant Earnings</FeatureTitle>
             <FeatureDescription>
-              Watch ads, complete challenges, teach courses, and share knowledge. 
-              Every action earns you coins instantly.
+              Get paid for watching ads, completing challenges, teaching skills, or taking courses. 
+              Start earning within minutes of joining - no experience required.
             </FeatureDescription>
           </FeatureCard>
 
           <FeatureCard delay="0.4s">
-            <FeatureIcon>🎓</FeatureIcon>
-            <FeatureTitle>Knowledge Exchange</FeatureTitle>
+            <FeatureIcon>🌍</FeatureIcon>
+            <FeatureTitle>Real Global Impact</FeatureTitle>
             <FeatureDescription>
-              Create and sell your own courses or learn from experts worldwide. 
-              Turn your skills into income.
+              Your earnings fund actual projects: clean water systems, school internet, 
+              community centers. See photos and videos of the change you're creating.
             </FeatureDescription>
           </FeatureCard>
 
           <FeatureCard delay="0.6s">
             <FeatureIcon>🏦</FeatureIcon>
-            <FeatureTitle>Global Withdrawals</FeatureTitle>
+            <FeatureTitle>Cash Out Anywhere</FeatureTitle>
             <FeatureDescription>
-              Convert coins to local currency and withdraw directly to your bank account, 
-              anywhere in the world.
+              Withdraw your earnings as real money to any bank account worldwide. 
+              Fast, secure, and available in your local currency.
             </FeatureDescription>
           </FeatureCard>
 
           <FeatureCard delay="0.8s">
-            <FeatureIcon>🌍</FeatureIcon>
-            <FeatureTitle>Community Impact</FeatureTitle>
+            <FeatureIcon>🎓</FeatureIcon>
+            <FeatureTitle>Skill Marketplace</FeatureTitle>
             <FeatureDescription>
-              Fund real projects that improve communities globally. 
-              Vote on initiatives and see your impact come to life.
+              Teach what you know or learn from others. From cooking to coding, 
+              every skill has value. Set your own prices and build your reputation.
             </FeatureDescription>
           </FeatureCard>
 
           <FeatureCard delay="1.0s">
-            <FeatureIcon>💬</FeatureIcon>
-            <FeatureTitle>Global Communities</FeatureTitle>
+            <FeatureIcon>🤝</FeatureIcon>
+            <FeatureTitle>Connect Globally</FeatureTitle>
             <FeatureDescription>
-              Connect with people worldwide through age, profession, and location-based 
-              chat groups and forums.
+              Join communities by age, profession, or location. Network with like-minded people, 
+              find mentors, and build lasting relationships worldwide.
             </FeatureDescription>
           </FeatureCard>
 
           <FeatureCard delay="1.2s">
-            <FeatureIcon>🎮</FeatureIcon>
-            <FeatureTitle>Gamified Growth</FeatureTitle>
+            <FeatureIcon>🚀</FeatureIcon>
+            <FeatureTitle>Grow & Achieve</FeatureTitle>
             <FeatureDescription>
-              Track your Life XP and Civilization XP. Compete on leaderboards 
-              and unlock daily life tools.
+              Track your personal growth with Life XP and contribute to global progress with Civilization XP. 
+              Unlock tools, rewards, and recognition as you advance.
             </FeatureDescription>
           </FeatureCard>
         </FeatureGrid>

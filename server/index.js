@@ -40,10 +40,21 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/users', require('./routes/users'));
-app.use('/api/civic', require('./routes/civic'));
-app.use('/api/payments', require('./routes/payments'));
-app.use('/api/ai', require('./routes/ai'));
+
+// Basic route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'CivilBoost API Server is running!',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      register: '/api/auth/register',
+      login: '/api/auth/login',
+      sendVerification: '/api/auth/send-verification',
+      profile: '/api/auth/profile'
+    }
+  });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

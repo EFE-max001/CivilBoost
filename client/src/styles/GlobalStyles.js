@@ -40,7 +40,11 @@ export const GlobalStyles = createGlobalStyle`
     background: ${neonColors.deepSpace};
     color: white;
     overflow-x: hidden;
-    cursor: none; /* Custom cursor will be added */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="%23ff0080" stroke-width="3"/><circle cx="12" cy="12" r="3" fill="%23ff0080"/></svg>'), auto !important;
+  }
+
+  button, a, input, textarea, select {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="%2300ff88" stroke-width="3"/><circle cx="12" cy="12" r="3" fill="%2300ff88"/></svg>'), pointer !important;
   }
 
   /* Custom scrollbar */

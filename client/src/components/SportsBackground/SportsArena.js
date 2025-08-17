@@ -8,7 +8,7 @@ const SPORTS_CYCLE = [
   'basketball', 'tennis', 'swimming', 'running'
 ];
 
-const CYCLE_DURATION = 180000; // 3 minutes per sport
+const CYCLE_DURATION = 8000; // 8 seconds per sport for better visibility
 
 // Keyframe animations
 const floatAnimation = keyframes`
@@ -36,7 +36,9 @@ const ArenaContainer = styled.div`
   height: 100vh;
   z-index: -1;
   overflow: hidden;
-  background: ${neonColors.deepSpace};
+  background: linear-gradient(135deg, ${neonColors.deepSpace}, ${neonColors.charcoalBlack});
+  will-change: transform;
+  transform: translateZ(0);
 `;
 
 const SportScene = styled.div`
@@ -44,11 +46,13 @@ const SportScene = styled.div`
   width: 100%;
   height: 100%;
   opacity: ${props => props.active ? 1 : 0};
-  transition: opacity 3s ease-in-out;
+  transition: opacity 2s ease-in-out;
   background: ${props => {
     const sport = neonColors.sports[props.sport];
-    return `radial-gradient(ellipse at center, ${sport.primary}20 0%, ${sport.secondary}10 50%, transparent 100%)`;
+    return `radial-gradient(ellipse at center, ${sport?.primary || neonColors.electricPink}20, transparent 70%)`;
   }};
+  will-change: opacity;
+  transform: translateZ(0);
 `;
 
 const Athlete = styled.div`
@@ -193,6 +197,108 @@ const SoccerField = ({ active }) => (
   </SportScene>
 );
 
+const BasketballCourt = ({ active }) => (
+  <SportScene active={active} sport="basketball">
+    <Athlete style={{ left: '30%', top: '50%' }} delay="0s" />
+    <Athlete style={{ left: '70%', top: '45%' }} delay="0.7s" />
+    <Equipment 
+      size="24px" 
+      color={neonColors.sunsetOrange} 
+      style={{ left: '50%', top: '25%' }} 
+      delay="0.3s" 
+    />
+    <div style={{
+      position: 'absolute',
+      left: '20%',
+      top: '30%',
+      width: '60px',
+      height: '80px',
+      border: `2px solid ${neonColors.goldenYellow}`,
+      borderRadius: '5px',
+      boxShadow: `0 0 15px ${neonColors.goldenYellow}60`
+    }} />
+    <StadiumLights position="25%" angle="15deg" delay="0.5s" />
+    <StadiumLights position="75%" angle="-15deg" delay="1.5s" />
+    {[...Array(12)].map((_, i) => (
+      <ParticleEffect key={i} delay={`${i * 0.7}s`} left={`${20 + i * 6}%`} />
+    ))}
+  </SportScene>
+);
+
+const TennisCourt = ({ active }) => (
+  <SportScene active={active} sport="tennis">
+    <Athlete style={{ left: '25%', top: '60%' }} delay="0s" />
+    <Athlete style={{ left: '75%', top: '40%' }} delay="0.9s" />
+    <Equipment 
+      size="18px" 
+      color={neonColors.cyberLime} 
+      style={{ left: '50%', top: '30%' }} 
+      delay="0.4s" 
+    />
+    <div style={{
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      width: '1px',
+      height: '60%',
+      background: neonColors.electricTeal,
+      boxShadow: `0 0 8px ${neonColors.electricTeal}`
+    }} />
+    <StadiumLights position="30%" angle="25deg" delay="0s" />
+    <StadiumLights position="70%" angle="-25deg" delay="1.8s" />
+    {[...Array(8)].map((_, i) => (
+      <ParticleEffect key={i} delay={`${i * 0.9}s`} left={`${25 + i * 7}%`} />
+    ))}
+  </SportScene>
+);
+
+const SwimmingPool = ({ active }) => (
+  <SportScene active={active} sport="swimming">
+    <Athlete style={{ left: '15%', top: '50%' }} delay="0s" />
+    <Athlete style={{ left: '45%', top: '45%' }} delay="0.5s" />
+    <Athlete style={{ left: '75%', top: '55%' }} delay="1s" />
+    <div style={{
+      position: 'absolute',
+      left: '10%',
+      top: '40%',
+      width: '80%',
+      height: '20%',
+      background: `linear-gradient(90deg, ${neonColors.electricTeal}20, ${neonColors.holographicBlue}40, ${neonColors.electricTeal}20)`,
+      borderRadius: '10px',
+      boxShadow: `0 0 20px ${neonColors.electricTeal}40`
+    }} />
+    <StadiumLights position="20%" angle="10deg" delay="0s" />
+    <StadiumLights position="80%" angle="-10deg" delay="1.2s" />
+    {[...Array(15)].map((_, i) => (
+      <ParticleEffect key={i} delay={`${i * 0.5}s`} left={`${10 + i * 5}%`} />
+    ))}
+  </SportScene>
+);
+
+const RunningTrack = ({ active }) => (
+  <SportScene active={active} sport="running">
+    <Athlete style={{ left: '10%', top: '50%' }} delay="0s" />
+    <Athlete style={{ left: '30%', top: '45%' }} delay="0.3s" />
+    <Athlete style={{ left: '50%', top: '55%' }} delay="0.6s" />
+    <Athlete style={{ left: '70%', top: '50%' }} delay="0.9s" />
+    <div style={{
+      position: 'absolute',
+      left: '5%',
+      top: '45%',
+      width: '90%',
+      height: '10%',
+      background: `linear-gradient(90deg, ${neonColors.plasmaPurple}30, ${neonColors.electricPink}50, ${neonColors.plasmaPurple}30)`,
+      borderRadius: '50px',
+      boxShadow: `0 0 15px ${neonColors.electricPink}40`
+    }} />
+    <StadiumLights position="10%" angle="5deg" delay="0s" />
+    <StadiumLights position="90%" angle="-5deg" delay="2s" />
+    {[...Array(20)].map((_, i) => (
+      <ParticleEffect key={i} delay={`${i * 0.3}s`} left={`${5 + i * 4.5}%`} />
+    ))}
+  </SportScene>
+);
+
 export const SportsArena = () => {
   const [currentSport, setCurrentSport] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -203,7 +309,7 @@ export const SportsArena = () => {
       setTimeout(() => {
         setCurrentSport((prev) => (prev + 1) % SPORTS_CYCLE.length);
         setIsTransitioning(false);
-      }, 1500);
+      }, 500);
     }, CYCLE_DURATION);
 
     return () => clearInterval(interval);
@@ -222,6 +328,14 @@ export const SportsArena = () => {
         return <VolleyballCourt key="volleyball" active={isActive} />;
       case 'soccer':
         return <SoccerField key="soccer" active={isActive} />;
+      case 'basketball':
+        return <BasketballCourt key="basketball" active={isActive} />;
+      case 'tennis':
+        return <TennisCourt key="tennis" active={isActive} />;
+      case 'swimming':
+        return <SwimmingPool key="swimming" active={isActive} />;
+      case 'running':
+        return <RunningTrack key="running" active={isActive} />;
       default:
         return <BoxingRing key="default" active={isActive} />;
     }

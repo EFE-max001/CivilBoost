@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { GlobalStyles } from './styles/GlobalStyles';
 import Navbar from './components/Layout/Navbar';
 import Home from './pages/Home';
+import Landing from './pages/Landing';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Dashboard from './pages/Dashboard';
@@ -87,14 +88,14 @@ function App() {
         <AuthProvider>
           <Router>
             <div className="App">
-              <Navbar />
               <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Landing />} />
+                <Route path="/home" element={<><Navbar /><Home /></>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/civic" element={<CivicEngagement />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route path="/dashboard" element={<><Navbar /><Dashboard /></>} />
+                <Route path="/civic" element={<><Navbar /><CivicEngagement /></>} />
+                <Route path="/profile" element={<><Navbar /><Profile /></>} />
               </Routes>
               <ToastContainer
                 position="top-right"
