@@ -3,17 +3,84 @@ const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
 const twilio = require('twilio');
 
-// Initialize Supabase
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
+// Mock Supabase client for development when credentials are not available
+let supabase;
+try {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_URL !== 'your_supabase_project_url') {
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_ANON_KEY
+    );
+  } else {
+    // Mock client for development
+    supabase = {
+      from: () => ({
+        select: () => ({ 
+          single: () => Promise.resolve({ data: null, error: { message: 'Database not configured' } }),
+          or: () => ({ single: () => Promise.resolve({ data: null, error: null }) })
+        }),
+        insert: () => ({ select: () => ({ single: () => Promise.resolve({ 
+          data: { 
+            id: 'mock_user_id', 
+            first_name: 'Demo', 
+            last_name: 'User', 
+            email: 'demo@civilboost.com',
+            phone_number: '+1234567890',
+            coins_balance: 0,
+            life_xp: 0,
+            civilization_xp: 0,
+            phone_verified: true
+          }, 
+          error: null 
+        }) }) }),
+        update: () => ({ eq: () => Promise.resolve({ error: null }) }),
+        eq: () => ({ single: () => Promise.resolve({ data: null, error: { message: 'Database not configured' } }) })
+      })
+    };
+  }
+} catch (error) {
+  console.warn('Supabase client initialization failed, using mock client');
+  supabase = {
+    from: () => ({
+      select: () => ({ 
+        single: () => Promise.resolve({ data: null, error: { message: 'Database not configured' } }),
+        or: () => ({ single: () => Promise.resolve({ data: null, error: null }) })
+      }),
+      insert: () => ({ select: () => ({ single: () => Promise.resolve({ 
+        data: { 
+          id: 'mock_user_id', 
+          first_name: 'Demo', 
+          last_name: 'User', 
+          email: 'demo@civilboost.com',
+          phone_number: '+1234567890',
+          coins_balance: 0,
+          life_xp: 0,
+          civilization_xp: 0,
+          phone_verified: true
+        }, 
+        error: null 
+      }) }) }),
+      update: () => ({ eq: () => Promise.resolve({ error: null }) }),
+      eq: () => ({ single: () => Promise.resolve({ data: null, error: { message: 'Database not configured' } }) })
+    })
+  };
+}
 
-// Initialize Twilio
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+// Mock Twilio client for development
+let twilioClient;
+try {
+  if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_ACCOUNT_SID !== 'placeholder_sid') {
+    twilioClient = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
+  } else {
+    twilioClient = null;
+  }
+} catch (error) {
+  console.warn('Twilio client initialization failed');
+  twilioClient = null;
+}
 
 // Generate JWT token
 const generateToken = (userId) => {
@@ -40,15 +107,28 @@ const sendSMSVerification = async (phoneNumber) => {
 // Verify SMS code
 const verifySMSCode = async (phoneNumber, code) => {
   try {
+    if (!twilioClient) {
+      console.warn('Twilio not configured, simulating SMS verification check');
+      // For development, accept code "123456" as valid
+      return {
+        success: code === '123456'
+      };
+    }
+
     const verification = await twilioClient.verify.v2
       .services(process.env.TWILIO_VERIFY_SERVICE_SID)
       .verificationChecks
       .create({ to: phoneNumber, code });
-    
-    return { success: verification.status === 'approved' };
+
+    return {
+      success: verification.status === 'approved'
+    };
   } catch (error) {
     console.error('SMS verification check error:', error);
-    return { success: false, error: error.message };
+    return {
+      success: false,
+      error: error.message
+    };
   }
 };
 

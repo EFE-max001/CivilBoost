@@ -1,9 +1,19 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-require('dotenv').config();
+
+// Set default environment variables for development
+process.env.SUPABASE_URL = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
+process.env.SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'placeholder_key';
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'development_jwt_secret_key_for_testing_only';
+process.env.TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID || 'placeholder_sid';
+process.env.TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN || 'placeholder_token';
+process.env.TWILIO_VERIFY_SERVICE_SID = process.env.TWILIO_VERIFY_SERVICE_SID || 'placeholder_service';
+
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
