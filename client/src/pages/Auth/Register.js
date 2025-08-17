@@ -68,6 +68,27 @@ const Input = styled.input`
   }
 `;
 
+const PasswordInputContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const PasswordToggle = styled.button`
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: ${neonColors.electricTeal};
+  cursor: pointer;
+  font-size: 1.2rem;
+  z-index: 1;
+  
+  &:hover {
+    color: ${neonColors.cyberLime};
+  }
+`;
+
 const Select = styled.select`
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid ${neonColors.holographicBlue}40;
@@ -154,6 +175,7 @@ export default function Register() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -170,6 +192,18 @@ export default function Register() {
 
     setIsVerifying(true);
     try {
+      // Check if backend server is running first
+      const healthCheck = await fetch('http://localhost:5000/health', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!healthCheck.ok) {
+        throw new Error('Backend server is not running');
+      }
+
       const response = await fetch('http://localhost:5000/api/auth/send-verification', {
         method: 'POST',
         headers: {
@@ -177,6 +211,10 @@ export default function Register() {
         },
         body: JSON.stringify({ phoneNumber: formData.phoneNumber }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
 
       const data = await response.json();
 
@@ -187,7 +225,14 @@ export default function Register() {
         toast.error(data.message || 'Failed to send verification code');
       }
     } catch (error) {
-      toast.error('Network error. Please try again.');
+      console.error('Verification error:', error);
+      if (error.message.includes('Backend server')) {
+        toast.error('Backend server is not running. Please start the server first.');
+      } else if (error.message.includes('Failed to fetch')) {
+        toast.error('Cannot connect to server. Please check if the backend is running on port 5000.');
+      } else {
+        toast.error(`Error: ${error.message}`);
+      }
     } finally {
       setIsVerifying(false);
     }
@@ -209,6 +254,18 @@ export default function Register() {
 
     setIsSubmitting(true);
     try {
+      // Check if backend server is running first
+      const healthCheck = await fetch('http://localhost:5000/health', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!healthCheck.ok) {
+        throw new Error('Backend server is not running');
+      }
+
       const response = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
         headers: {
@@ -216,6 +273,10 @@ export default function Register() {
         },
         body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
 
       const data = await response.json();
 
@@ -228,7 +289,14 @@ export default function Register() {
         toast.error(data.message || 'Registration failed');
       }
     } catch (error) {
-      toast.error('Network error. Please try again.');
+      console.error('Registration error:', error);
+      if (error.message.includes('Backend server')) {
+        toast.error('Backend server is not running. Please start the server first.');
+      } else if (error.message.includes('Failed to fetch')) {
+        toast.error('Cannot connect to server. Please check if the backend is running on port 5000.');
+      } else {
+        toast.error(`Error: ${error.message}`);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -267,15 +335,23 @@ export default function Register() {
             required
           />
           
-          <Input 
-            type="password" 
-            name="password"
-            placeholder="Password (min 6 characters) *" 
-            value={formData.password}
-            onChange={handleInputChange}
-            required
-            minLength="6"
-          />
+          <PasswordInputContainer>
+            <Input 
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password (min 6 characters) *" 
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+              minLength="6"
+            />
+            <PasswordToggle 
+              type="button" 
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? '👁️' : '👁️‍🗨️'}
+            </PasswordToggle>
+          </PasswordInputContainer>
           
           <VerificationSection>
             <Input 

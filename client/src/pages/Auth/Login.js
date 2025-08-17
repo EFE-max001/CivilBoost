@@ -139,6 +139,18 @@ export default function Login() {
 
     setIsSubmitting(true);
     try {
+      // Check if backend server is running first
+      const healthCheck = await fetch('http://localhost:5000/health', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!healthCheck.ok) {
+        throw new Error('Backend server is not running');
+      }
+
       const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: {
@@ -146,6 +158,10 @@ export default function Login() {
         },
         body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
 
       const data = await response.json();
 
@@ -158,7 +174,14 @@ export default function Login() {
         toast.error(data.message || 'Login failed');
       }
     } catch (error) {
-      toast.error('Network error. Please try again.');
+      console.error('Login error:', error);
+      if (error.message.includes('Backend server')) {
+        toast.error('Backend server is not running. Please start the server first.');
+      } else if (error.message.includes('Failed to fetch')) {
+        toast.error('Cannot connect to server. Please check if the backend is running on port 5000.');
+      } else {
+        toast.error(`Error: ${error.message}`);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -216,7 +239,7 @@ export default function Login() {
             onChange={handleInputChange}
             required
           />
-          <ForgotPassword href="#forgot">Forgot Password?</ForgotPassword>
+          <ForgotPassword href="/forgot-password">Forgot Password?</ForgotPassword>
           
           <FuturisticButton 
             type="submit" 

@@ -12,6 +12,7 @@ import Home from './pages/Home';
 import Landing from './pages/Landing';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
+import ForgotPassword from './pages/Auth/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import CivicEngagement from './pages/CivicEngagement';
 import Profile from './pages/Profile';
@@ -93,6 +94,7 @@ function App() {
                 <Route path="/home" element={<><Navbar /><Home /></>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/dashboard" element={<><Navbar /><Dashboard /></>} />
                 <Route path="/civic" element={<><Navbar /><CivicEngagement /></>} />
                 <Route path="/profile" element={<><Navbar /><Profile /></>} />

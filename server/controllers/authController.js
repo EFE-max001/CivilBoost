@@ -282,9 +282,198 @@ const getProfile = async (req, res) => {
   }
 };
 
+// Forgot password functionality
+const forgotPassword = async (req, res) => {
+  try {
+    const { email, firstName, lastName } = req.body;
+
+    if (!email || !firstName || !lastName) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide email, first name, and last name'
+      });
+    }
+
+    // Find user with matching details
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('id, phone_number, first_name, last_name')
+      .eq('email', email.toLowerCase())
+      .eq('first_name', firstName)
+      .eq('last_name', lastName)
+      .single();
+
+    if (error || !user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No account found with the provided information'
+      });
+    }
+
+    // Send SMS verification to user's phone
+    const smsResult = await sendSMSVerification(user.phone_number);
+    
+    if (smsResult.success) {
+      // Mask phone number for security
+      const maskedPhone = user.phone_number.substring(0, 3) + 
+                         '*'.repeat(user.phone_number.length - 7) + 
+                         user.phone_number.substring(user.phone_number.length - 4);
+
+      res.json({
+        success: true,
+        message: 'Verification code sent to your registered phone number',
+        maskedPhone
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: 'Failed to send verification code'
+      });
+    }
+
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
+// Verify reset code
+const verifyResetCode = async (req, res) => {
+  try {
+    const { email, verificationCode } = req.body;
+
+    if (!email || !verificationCode) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and verification code are required'
+      });
+    }
+
+    // Get user's phone number
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('phone_number')
+      .eq('email', email.toLowerCase())
+      .single();
+
+    if (error || !user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Verify SMS code
+    const verification = await verifySMSCode(user.phone_number, verificationCode);
+
+    if (verification.success) {
+      res.json({
+        success: true,
+        message: 'Verification code is valid'
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: 'Invalid or expired verification code'
+      });
+    }
+
+  } catch (error) {
+    console.error('Verify reset code error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
+// Reset password
+const resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword, verificationCode } = req.body;
+
+    if (!email || !newPassword || !verificationCode) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email, new password, and verification code are required'
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long'
+      });
+    }
+
+    // Get user
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('id, phone_number')
+      .eq('email', email.toLowerCase())
+      .single();
+
+    if (userError || !user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Verify SMS code one more time
+    const verification = await verifySMSCode(user.phone_number, verificationCode);
+
+    if (!verification.success) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired verification code'
+      });
+    }
+
+    // Hash new password
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // Update password in database
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({ 
+        password_hash: hashedPassword,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', user.id);
+
+    if (updateError) {
+      console.error('Password update error:', updateError);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to update password'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Password reset successfully'
+    });
+
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   sendVerification,
-  getProfile
+  getProfile,
+  forgotPassword,
+  verifyResetCode,
+  resetPassword
 };
